@@ -33,3 +33,16 @@ jobs:
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
           channelId: live
           projectId: kathansh-7bb0e
+
+      - name: Write service account key to file
+        run: echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > /tmp/firebase-key.json
+
+      - name: Deploy Firestore rules and indexes
+        run: npx firebase-tools deploy --only firestore:rules,firestore:indexes --project kathansh-7bb0e
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: /tmp/firebase-key.json
+
+      - name: Deploy Storage rules
+        run: npx firebase-tools deploy --only storage --project kathansh-7bb0e
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: /tmp/firebase-key.json
